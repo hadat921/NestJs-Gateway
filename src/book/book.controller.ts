@@ -9,6 +9,8 @@ import {
   ParseIntPipe,
   Param,
   Query,
+  UseFilters,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { BookService } from './book.service';
@@ -18,32 +20,38 @@ import {
   UpdateBookBody,
   UpdateTagBookBody,
 } from './book.dto';
+import { ErrorFilter } from '../error/error.filter';
+import { getUser } from 'src/decorators/getUser.decorator';
 @Controller('book')
 export class BookController {
   constructor(private bookService: BookService) {}
   @UseGuards(AuthGuard)
+  @UseFilters(ErrorFilter)
   @Post('create')
-  async createBook(@Body() bookCreate: BookCreate, @Request() req) {
-    return this.bookService.createBook(bookCreate, req.user);
+  async createBook(@Body() bookCreate: BookCreate, @getUser() user: any) {
+    return this.bookService.createBook(bookCreate, user);
   }
 
   @UseGuards(AuthGuard)
+  @UseFilters(ErrorFilter)
   @Get('list')
   async listBook(@Query() bookQuery: BookQuery) {
     return this.bookService.getList(bookQuery);
   }
 
   @UseGuards(AuthGuard)
+  @UseFilters(ErrorFilter)
   @Put('update/:id')
   async updateBook(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateBookBody: UpdateBookBody,
-    @Request() req,
+    @getUser() user: any,
   ) {
-    return this.bookService.updateBook(id, updateBookBody, req.user);
+    return this.bookService.updateBook(id, updateBookBody, user);
   }
 
   @UseGuards(AuthGuard)
+  @UseFilters(ErrorFilter)
   @Put('update/tag/:id')
   async updateTag(
     @Param('id', ParseIntPipe) id: number,
@@ -53,13 +61,15 @@ export class BookController {
   }
 
   @UseGuards(AuthGuard)
+  @UseFilters(ErrorFilter)
   @Get(':id')
   async getBookById(@Param('id', ParseIntPipe) id: number) {
     return this.bookService.getById(id);
   }
 
   @UseGuards(AuthGuard)
-  @Get(':id')
+  @UseFilters(ErrorFilter)
+  @Delete('delete/:id')
   async deleteBook(@Param('id', ParseIntPipe) id: number) {
     return this.bookService.deteleBook(id);
   }

@@ -8,12 +8,15 @@ import { LoginDTO, RegisterDTO } from './dto';
 import * as argon from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { ResponseService } from '../common/ultils/handler/responseHandler';
+
 @Injectable({})
 export class AuthService {
   constructor(
     private prismaservice: PrismaService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private responseService: ResponseService,
   ) {}
   async register(registerDTO: RegisterDTO) {
     const hashedPassword = await argon.hash(registerDTO.password);
@@ -31,8 +34,7 @@ export class AuthService {
           createdAt: true,
         },
       });
-      await this.signJwtToken(user.id, user.email);
-      return user;
+      return this.responseService.successHandler(200, 'Success', user);
     } catch (error) {
       console.log(error);
     }
@@ -63,18 +65,15 @@ export class AuthService {
       }
       delete user.hashedPassword;
       const accessToken = await this.signJwtToken(user.id, user.email);
-      return {
-        accessToken: accessToken,
-        data: user,
-      };
+      return this.responseService.successHandler(200, 'Success', {
+        accessToken,
+        user,
+      });
     } catch (error) {
       console.log(error);
     }
   }
-  async signJwtToken(
-    userId: number,
-    email: string,
-  ): Promise<{ accessToken: string }> {
+  async signJwtToken(userId: number, email: string): Promise<string> {
     const payload = {
       id: userId,
       email: email,
@@ -83,8 +82,6 @@ export class AuthService {
       expiresIn: '24h',
       secret: this.configService.get('JWT_SECRET'),
     });
-    return {
-      accessToken: jwtString,
-    };
+    return jwtString;
   }
 }
