@@ -7,14 +7,6 @@ const selectBookWithBookTag: Prisma.BookSelect = {
   category: true,
   numberOfpages: true,
   createdAt: true,
-  user: {
-    select: {
-      id: true,
-      lastName: true,
-      firstName: true,
-      email: true,
-    },
-  },
   BookTag: {
     select: {
       tagId: true,

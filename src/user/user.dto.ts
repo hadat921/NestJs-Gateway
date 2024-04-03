@@ -1,8 +1,18 @@
-import { IsEmail, IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  Validate,
+} from 'class-validator';
+import { IsEmailExisted } from 'src/auth/auth.dto';
 
 export class UserDTO {
   @IsEmail()
   @IsNotEmpty()
+  @Validate(IsEmailExisted, {
+    message: 'Email is existed',
+  })
   email: string;
 
   @IsOptional()

@@ -69,8 +69,13 @@ export class BookService {
             { title: { contains: bookQuery.title || '' } },
             { author: { contains: bookQuery.author || '' } },
             { category: { contains: bookQuery.category || '' } },
-            { numberOfpages: { contains: bookQuery.numberOfpages || '' } },
-          ],
+            {
+              numberOfpages:
+                typeof bookQuery.numberOfpages === 'number'
+                  ? { equals: bookQuery.numberOfpages }
+                  : undefined,
+            },
+          ].filter(Boolean), // Loại bỏ các giá trị falsy khỏi mảng
         }),
       },
       select: selectBookWithBookTag,
@@ -138,7 +143,7 @@ export class BookService {
       },
     });
     return this.responseService.successHandler(
-      200,
+      204,
       'Book deleted successfully',
       null,
     );

@@ -22,7 +22,7 @@ import {
 } from './book.dto';
 import { ErrorFilter } from '../error/error.filter';
 import { getUser } from 'src/decorators/getUser.decorator';
-@Controller('book')
+@Controller('books')
 export class BookController {
   constructor(private bookService: BookService) {}
   @UseGuards(AuthGuard)
@@ -41,7 +41,7 @@ export class BookController {
 
   @UseGuards(AuthGuard)
   @UseFilters(ErrorFilter)
-  @Put('update/:id')
+  @Put(':id')
   async updateBook(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateBookBody: UpdateBookBody,
@@ -52,7 +52,7 @@ export class BookController {
 
   @UseGuards(AuthGuard)
   @UseFilters(ErrorFilter)
-  @Put('update/tag/:id')
+  @Put('tag/:id')
   async updateTag(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateTagBookBody: UpdateTagBookBody,
@@ -69,7 +69,7 @@ export class BookController {
 
   @UseGuards(AuthGuard)
   @UseFilters(ErrorFilter)
-  @Delete('delete/:id')
+  @Delete(':id')
   async deleteBook(@Param('id', ParseIntPipe) id: number) {
     return this.bookService.deteleBook(id);
   }

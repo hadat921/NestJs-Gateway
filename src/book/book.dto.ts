@@ -4,6 +4,8 @@ import {
   IsOptional,
   IsEnum,
   Validate,
+  IsNumber,
+  IsPositive,
 } from 'class-validator';
 import { BookCategoryEnum } from './book.enum';
 import { TagIsNotExisted } from 'src/common/ultils/validate/tagValidate';
@@ -22,8 +24,9 @@ export class BookDTO {
   category: string;
 
   @IsNotEmpty()
-  @IsString()
-  numberOfpages: string;
+  @IsNumber()
+  @IsPositive()
+  numberOfpages: number;
 }
 
 export class BookQuery {
@@ -41,27 +44,29 @@ export class BookQuery {
   category: string;
 
   @IsOptional()
-  @IsString()
-  numberOfpages: string;
+  @IsNumber()
+  @IsPositive()
+  numberOfpages: number;
 }
 
 export class BookCreate {
+  @IsNotEmpty()
   @IsString()
-  @IsOptional()
   title: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   author: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @IsEnum(BookCategoryEnum)
   category: string;
 
-  @IsOptional()
-  @IsString()
-  numberOfpages: string;
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  numberOfpages: number;
 }
 export class UpdateTagBookBody {
   @Validate(TagIsNotExisted, {

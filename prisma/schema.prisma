@@ -28,7 +28,7 @@ model Book {
   title         String
   author        String
   category      String
-  numberOfpages String
+  numberOfpages Int
   updatedAt     DateTime?
   createdAt     DateTime  @default(now())
   user          User      @relation(fields: [creator_id], references: [id])
